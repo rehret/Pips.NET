@@ -6,3 +6,5 @@ script:
     - dotnet restore
     - dotnet build -c Release
     - ls `pwd`/*.Test/*.csproj | xargs -L1 dotnet test -c Release
+notifications:
+    email: false
