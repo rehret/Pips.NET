@@ -1,3 +1,3 @@
-[![Build Status](https://travis-ci.org/rehret/pips.NET.svg?branch=master)](https://travis-ci.org/rehret/pips.NET)
+[![Build Status](https://travis-ci.org/rehret/Pips.NET.svg?branch=master)](https://travis-ci.org/rehret/Pips.NET)
 
-# pips.NET
+# Pips.NET
