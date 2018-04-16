@@ -4,5 +4,5 @@ mono: none
 dotnet: 2.0.0
 script:
     - dotnet restore
-    - dotnet build
-    - ls `pwd`/*.Test/*.csproj | xargs -L1 dotnet test
+    - dotnet build -c Release
+    - ls `pwd`/*.Test/*.csproj | xargs -L1 dotnet test -c Release
