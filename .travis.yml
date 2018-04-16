@@ -1,5 +1,5 @@
 language: csharp
-solution: pips.NET.sln
+solution: Pips.NET.sln
 mono: none
 dotnet: 2.0.0
 script:
