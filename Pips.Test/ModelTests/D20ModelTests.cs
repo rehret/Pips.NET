@@ -96,5 +96,39 @@ namespace Pips.Test.ModelTests
             Assert.Equal(numDice, rolls.Count());
             Assert.True(rolls.All(roll => roll >= 1 && roll <= numSides));
         }
+
+        [Fact]
+        public void ValidateThatRollsAreDifferentEachTime()
+        {
+            // Arrange
+            var numDice = 100;
+            var numSides = 100;
+            var d20 = new D20(numDice, numSides);
+
+            // Act
+            var firstRolls = d20.Rolls;
+            var secondRolls = d20.Rolls;
+
+            // Assert
+            Assert.False(firstRolls.SequenceEqual(secondRolls));
+        }
+
+        [Theory]
+        [InlineData(10, 10)]
+        [InlineData(1, 1)]
+        [InlineData(25, 1)]
+        [InlineData(100, 5)]
+        [InlineData(7, 2)]
+        public void ValidateThatDiceIsRolledCorrectNumberOfTimes(int numDice, int numSides)
+        {
+            // Arange
+            var d20 = new D20(numDice, numSides);
+
+            // Act
+            var rolls = d20.Rolls;
+
+            //Assert
+            Assert.Equal(numDice, rolls.Count());
+        }
     }
 }
