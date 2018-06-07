@@ -1,10 +1,7 @@
-language: csharp
-solution: Pips.NET.sln
-mono: none
-dotnet: 2.0.0
+sudo: required
+services:
+    - docker
 script:
-    - dotnet restore
-    - dotnet build -c Release
-    - ls `pwd`/*.Test/*.csproj | xargs -L1 dotnet test -c Release
+    - docker build -t pips-net:ci -f Pips/Dockerfile .
 notifications:
     email: false
