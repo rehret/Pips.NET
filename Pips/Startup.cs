@@ -22,7 +22,7 @@ namespace Pips
 
             services.AddSwaggerGen(config =>
             {
-                config.SwaggerDoc("v1", new Info { Title = "Pips.NET", Version = "v1" });
+                config.SwaggerDoc("v1", new Info { Title = "Pips", Version = "v1" });
             });
         }
 
@@ -37,7 +37,7 @@ namespace Pips
             app.UseSwagger();
             app.UseSwaggerUI(config =>
             {
-                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Pips.NET v1");
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Pips v1");
             });
 
 			app.UseMvc();
