@@ -2,8 +2,9 @@ sudo: required
 services:
   - docker
 env:
-  - CI_IMAGE=pips-net:ci
-  - BASE_IMAGE=rehret/pips-net
+  global:
+    - CI_IMAGE=pips-net:ci
+    - BASE_IMAGE=rehret/pips-net
 jobs:
   include:
     - stage: build
