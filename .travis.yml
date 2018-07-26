@@ -1,5 +1,4 @@
 sudo: required
-language: csharp
 services:
   - docker
 env:
@@ -23,10 +22,11 @@ jobs:
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; docker tag ${CI_IMAGE} ${TARGET_IMAGE}; docker push ${TARGET_IMAGE}
     - stage: publish master
-      if: branch = master
+      if: branch = master AND type != pull_request
       env:
         - TARGET_IMAGE=${BASE_IMAGE}:latest
       script:
         - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"; docker tag ${CI_IMAGE} ${TARGET_IMAGE}; docker push ${TARGET_IMAGE}
+script: echo ""
 notifications:
   email: false
