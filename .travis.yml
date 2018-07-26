@@ -5,11 +5,26 @@ env:
   global:
     - CI_IMAGE=pips-net:ci
     - BASE_IMAGE=rehret/pips-net
-script:
-  - docker build -t $CI_IMAGE -f Pips/Dockerfile .
-after_success:
-  - if [ "${TRAVIS_PULL_REQUEST}" <> "false" ]; then echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE rehret/pips-net:pr-${TRAVIS_PULL_REQUEST}; docker push rehret/pips-net:pr-${TRAVIS_PULL_REQUEST}; fi
-  - if [ -n "$TRAVIS_TAG" ]; then echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE rehret/pips-net:${TRAVIS_TAG}; docker push rehret/pips-net:${TRAVIS_TAG}; fi
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE rehret/pips-net:latest; docker push rehret/pips-net:latest; fi
+script: docker build -t $CI_IMAGE -f Pips/Dockerfile .
+jobs:
+  include:
+    - stage: publish pull request
+      if: type = pull_request
+      env:
+        - TARGET_IMAGE=${BASE_IMAGE}:pr-${TRAVIS_PULL_REQUEST}
+      script:
+        - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE $TARGET_IMAGE; docker push $TARGET_IMAGE;
+    - stage: publish tag
+      if: tag IS present
+      env:
+        - TARGET_IMAGE=${BASE_IMAGE}:${TRAVIS_TAG}
+      script:
+        - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE $TARGET_IMAGE; docker push $TARGET_IMAGE
+    - stage: publish master
+      if: branch = master AND type != pull_request
+      env:
+        - TARGET_IMAGE=${BASE_IMAGE}:latest
+      script:
+        - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE $TARGET_IMAGE; docker push $TARGET_IMAGE
 notifications:
   email: false
