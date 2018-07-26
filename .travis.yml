@@ -4,28 +4,27 @@ services:
 env:
   - CI_IMAGE: pips-net:ci
   - BASE_IMAGE: rehret/pips-net
-jobs:
-  include:
-    - stage: build
-      script:
-        - docker build -t ${CI_IMAGE} -f Pips/Dockerfile .
-    - stage: 'publish pull request'
-      if: type = pull_request
-      env:
-        - TARGET_IMAGE=${BASE_IMAGE}:pr-${TRAVIS_PULL_REQUEST}
-      script:
-        - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD; docker tag ${CI_IMAGE} ${TARGET_IMAGE}; docker push ${TARGET_IMAGE};
-    - stage: 'publish tag'
-      if: tag IS present
-      env:
-        - TARGET_IMAGE=${BASE_IMAGE}:${TRAVIS_TAG}
-      script:
-        - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD; docker tag ${CI_IMAGE} ${TARGET_IMAGE}; docker push ${TARGET_IMAGE}
-    - stage: 'publish master'
-      if: branch = master
-      env:
-        - TARGET_IMAGE=${BASE_IMAGE}:latest
-      script:
-        - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD; docker tag ${CI_IMAGE} ${TARGET_IMAGE}; docker push ${TARGET_IMAGE}
+stages:
+  - name: build
+    script:
+      - docker build -t ${CI_IMAGE} -f Pips/Dockerfile .
+  - name: 'publish pull request'
+    if: type = pull_request
+    env:
+      - TARGET_IMAGE=${BASE_IMAGE}:pr-${TRAVIS_PULL_REQUEST}
+    script:
+      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD; docker tag ${CI_IMAGE} ${TARGET_IMAGE}; docker push ${TARGET_IMAGE};
+  - name: 'publish tag'
+    if: tag IS present
+    env:
+      - TARGET_IMAGE=${BASE_IMAGE}:${TRAVIS_TAG}
+    script:
+      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD; docker tag ${CI_IMAGE} ${TARGET_IMAGE}; docker push ${TARGET_IMAGE}
+  - name: 'publish master'
+    if: branch = master
+    env:
+      - TARGET_IMAGE=${BASE_IMAGE}:latest
+    script:
+      - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD; docker tag ${CI_IMAGE} ${TARGET_IMAGE}; docker push ${TARGET_IMAGE}
 notifications:
   email: false
