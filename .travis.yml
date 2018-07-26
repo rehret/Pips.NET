@@ -3,13 +3,14 @@ services:
   - docker
 env:
   global:
-    - CI_IMAGE=pips-net:ci
-    - BASE_IMAGE=rehret/pips-net
+    - APP_NAME=pips-net
+    - CI_IMAGE=${APP_NAME}:ci
+    - BASE_IMAGE=${DOCKER_USERNAME}/${APP_NAME}
 script:
   - docker build -t $CI_IMAGE -f Pips/Dockerfile .
 after_success:
-  - if [ "${TRAVIS_PULL_REQUEST}" <> "false" ]; then echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE rehret/pips-net:pr-${TRAVIS_PULL_REQUEST}; docker push rehret/pips-net:pr-${TRAVIS_PULL_REQUEST}; fi
-  - if [ -n "$TRAVIS_TAG" ]; then echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE rehret/pips-net:${TRAVIS_TAG}; docker push rehret/pips-net:${TRAVIS_TAG}; fi
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE rehret/pips-net:latest; docker push rehret/pips-net:latest; fi
+  - if [ "${TRAVIS_PULL_REQUEST}" <> "false" ]; then echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE ${DOCKER_USERNAME}/${APP_NAME}:pr-${TRAVIS_PULL_REQUEST}; docker push ${DOCKER_USERNAME}/${APP_NAME}:pr-${TRAVIS_PULL_REQUEST}; fi
+  - if [ -n "$TRAVIS_TAG" ]; then echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE ${DOCKER_USERNAME}/${APP_NAME}:${TRAVIS_TAG}; docker push ${DOCKER_USERNAME}/${APP_NAME}:${TRAVIS_TAG}; fi
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin; docker tag $CI_IMAGE ${DOCKER_USERNAME}/${APP_NAME}:latest; docker push ${DOCKER_USERNAME}/${APP_NAME}:latest; fi
 notifications:
   email: false
